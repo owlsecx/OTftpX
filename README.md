@@ -18,21 +18,20 @@
 
 ## 📌 Overview
 
-TFTP / PXE network-boot server configuration security auditor
+
+OTftpX is an offline, read-only TFTP and PXE network-boot server configuration auditor covering tftpd-hpa, atftpd, inetd/xinetd in.tftpd and dnsmasq TFTP/PXE directives. It analyses iPXE scripts, PXELINUX/GRUB menus and kickstart/preseed/autoinstall files for plaintext credentials, unauthenticated repos and post-install shell scripts, and walks TFTP roots for world-writable images and keys. Secrets are masked and findings export to TXT, Markdown, JSON, CSV or SARIF.
 
 ---
 
 ## ✨ Features
 
-- in.tftpd option engine (tftpd-hpa defaults file, xinetd server_args, inetd.conf): --create, --secure, --user, --permissive, --umask, remap files, listen address scope, tcp_wrappers
-- atftpd OPTIONS, dnsmasq TFTP / PXE directives only (enable-tftp, tftp-root, tftp-secure, dhcp-boot, pxe-service) — DHCP scopes are left to ODhcpX
-- iPXE scripts — plaintext chainloading, imgverify, embedded credentials, boot-time shell
-- PXELINUX / GRUB menus — MENU MASTER PASSWD, superusers / password_pbkdf2, root-shell cmdlines, check_signatures, auto-reinstall defaults
-- Kickstart / preseed / autoinstall — plaintext and weak password hashes, sshpw, unauthenticated repos, curl | sh post-install scripts
-- TFTP root walk — world-writable boot images, keys, tokens, leftovers, escaping symlinks, Secure Boot (unsigned EFI) hints, loader version info
-- Secrets masked everywhere; --root offline images
-- Export TXT / Markdown / JSON / CSV / SARIF 2.1.0
-- Self-test --demo, CI gates --fail-on / --min-severity
+
+- in.tftpd option engine (tftpd-hpa defaults, xinetd server_args, inetd.conf): --create, --secure, --user, remap, scope
+- atftpd and dnsmasq TFTP/PXE directives (enable-tftp, tftp-root, tftp-secure, dhcp-boot, pxe-service)
+- iPXE script checks: plaintext chainloading, missing imgverify, embedded credentials, boot-time shell
+- PXELINUX/GRUB menu checks (MENU MASTER PASSWD, password_pbkdf2, root-shell cmdlines, check_signatures)
+- Kickstart/preseed/autoinstall review for plaintext/weak hashes, sshpw and unauthenticated repos
+- TFTP root walk for world-writable images, keys and symlinks; secrets masked with TXT/MD/JSON/CSV/SARIF export
 
 ---
 
@@ -45,8 +44,13 @@ TFTP / PXE network-boot server configuration security auditor
 
 ## 🚀 Usage
 
+
 ```bash
-./OTftpX
+./OTftpX --scan -f sarif -o tftp.sarif
+./OTftpX -i /etc/default/tftpd-hpa -i /srv/tftp
+./OTftpX -r /mnt/image --fail-on high --json
+./OTftpX --demo
+./OTftpX --help
 ```
 
 ---
